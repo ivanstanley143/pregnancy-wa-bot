@@ -6,6 +6,12 @@ let LAST_WEEK = null;
 
 module.exports = (sock) => {
   setInterval(async () => {
+
+    // 🔒 WAIT until WhatsApp login is complete
+    if (!sock?.user?.id) {
+      console.log("⏳ Scheduler waiting for WhatsApp login...");
+      return;
+    }
     const now = utils.now();
     const time = now.format("HH:mm");
     const today = now.format("YYYY-MM-DD");
