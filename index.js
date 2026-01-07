@@ -16,29 +16,30 @@ async function start() {
 
   sock.ev.on("creds.update", saveCreds);
 
-  // ✅ WAIT before requesting pairing code (CRITICAL FIX)
-  if (!state.creds.registered) {
-    const rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout
-    });
+  // ✅ WAIT for connection open, then ask pairing
+  sock.ev.on("connection.update", async (update) => {
+    const { connection } = update;
 
-    rl.question(
-      "Enter WhatsApp number with country code (example: 66XXXXXXXXX): ",
-      async (number) => {
-        try {
-          // ⏳ wait for socket to be ready
-          await new Promise(r => setTimeout(r, 2000));
+    if (connection === "open" && !state.creds.registered) {
+      const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+      });
 
-          const code = await sock.requestPairingCode(number.trim());
-          console.log("\nPAIRING CODE:", code, "\n");
-        } catch (err) {
-          console.error("Pairing failed:", err.message);
+      rl.question(
+        "Enter WhatsApp number with country code (example: 66XXXXXXXXX): ",
+        async (number) => {
+          try {
+            const code = await sock.requestPairingCode(number.trim());
+            console.log("\nPAIRING CODE:", code, "\n");
+          } catch (err) {
+            console.error("Pairing failed:", err.message);
+          }
+          rl.close();
         }
-        rl.close();
-      }
-    );
-  }
+      );
+    }
+  });
 
   sock.ev.on("messages.upsert", async ({ messages }) => {
     const m = messages[0];
