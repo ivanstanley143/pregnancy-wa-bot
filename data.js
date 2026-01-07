@@ -5,8 +5,8 @@ module.exports = {
   DOB: "1993-06-24",
   LMP: "2025-10-18",
 
-  USER: "91XXXXXXXXXX@s.whatsapp.net",
-  HUSBAND: "91XXXXXXXXXX@s.whatsapp.net",
+  USER: "919074616114@s.whatsapp.net",
+  HUSBAND: "918921285711@s.whatsapp.net",
 
   SAFE_FOODS: ["Apple","Banana","Rice","Chapati","Milk","Curd"],
   AVOID_FOODS: ["Papaya","Pineapple","Raw eggs","Alcohol"],
