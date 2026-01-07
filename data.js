@@ -24,19 +24,21 @@ module.exports = {
   },
 
   BABY_IMAGES: {
-    12: ["Lime 🍋", "https://raw.githubusercontent.com/yourname/pregnancy-images/main/week12_lime.jpg"],
-    13: ["Peach 🍑", "https://raw.githubusercontent.com/yourname/pregnancy-images/main/week13_peach.jpg"],
-    14: ["Lemon 🍋", "https://raw.githubusercontent.com/yourname/pregnancy-images/main/week14_lemon.jpg"]
+    11: ["Fig 🫐", "https://github.com/ivanstanley143/pregnancy-wa-bot/blob/5ed24085ccc324bb33131c877fa92f4016d7845f/images/file_00000000d12872079d38e6877ebf8d82.png"],
+    12: ["Lime 🍋", "https://github.com/ivanstanley143/pregnancy-wa-bot/blob/5ed24085ccc324bb33131c877fa92f4016d7845f/images/file_000000002f447207bffe5ab6c0f843fc.png"],
+    13: ["Peach 🍑", "https://github.com/ivanstanley143/pregnancy-wa-bot/blob/5ed24085ccc324bb33131c877fa92f4016d7845f/images/file_0000000075ec72069b52c6d13eb158cd.png"],
+    14: ["Lemon 🍋", "https://github.com/ivanstanley143/pregnancy-wa-bot/blob/5ed24085ccc324bb33131c877fa92f4016d7845f/images/file_00000000ae207206a91304441fc049cc.png"],
+    15: ["Apple 🍎", "https://github.com/ivanstanley143/pregnancy-wa-bot/blob/5ed24085ccc324bb33131c877fa92f4016d7845f/images/file_00000000a2487206b0277bcf6ef2757e.png"], 
   },
 
   TRIMESTER_IMAGES: {
-    1: "https://raw.githubusercontent.com/yourname/pregnancy-images/main/trimester1.jpg",
-    2: "https://raw.githubusercontent.com/yourname/pregnancy-images/main/trimester2.jpg",
-    3: "https://raw.githubusercontent.com/yourname/pregnancy-images/main/trimester3.jpg"
+    1: "https://github.com/ivanstanley143/pregnancy-wa-bot/blob/5ed24085ccc324bb33131c877fa92f4016d7845f/images/file_00000000a9c47209958c868a7d4aaa1e.png",
+    2: "https://github.com/ivanstanley143/pregnancy-wa-bot/blob/5ed24085ccc324bb33131c877fa92f4016d7845f/images/file_00000000fc48720685063f2cf441d60a.png",
+    3: "https://github.com/ivanstanley143/pregnancy-wa-bot/blob/5ed24085ccc324bb33131c877fa92f4016d7845f/images/file_0000000013c0720681789ce45f4f039f.png"
   },
 
-  SAFE_FOOD_IMAGE: "https://raw.githubusercontent.com/yourname/pregnancy-images/main/safe_foods.jpg",
-  AVOID_FOOD_IMAGE: "https://raw.githubusercontent.com/yourname/pregnancy-images/main/avoid_foods.jpg",
+  SAFE_FOOD_IMAGE: "https://github.com/ivanstanley143/pregnancy-wa-bot/blob/5ed24085ccc324bb33131c877fa92f4016d7845f/images/file_000000003b5c7207b2003e19bea0cbed.png",
+  AVOID_FOOD_IMAGE: "https://github.com/ivanstanley143/pregnancy-wa-bot/blob/5ed24085ccc324bb33131c877fa92f4016d7845f/images/file_0000000083a47207af592c9b4c3d45c0.png",
 
   WEEKLY_DUA: {
     12: "🤲 Rabbi habli min ladunka dhurriyyatan tayyibah",
