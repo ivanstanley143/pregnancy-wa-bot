@@ -11,10 +11,12 @@ async function start() {
 
   const sock = makeWASocket({
     auth: state,
-    printQRInTerminal: false // ❌ QR disabled
+    printQRInTerminal: false
   });
 
-  // ✅ Pairing code login (NEW METHOD)
+  sock.ev.on("creds.update", saveCreds);
+
+  // ✅ WAIT before requesting pairing code (CRITICAL FIX)
   if (!state.creds.registered) {
     const rl = readline.createInterface({
       input: process.stdin,
@@ -22,20 +24,21 @@ async function start() {
     });
 
     rl.question(
-      "Enter WhatsApp number with country code (example: 66XXXXXXXXXX): ",
+      "Enter WhatsApp number with country code (example: 91XXXXXXXXXX): ",
       async (number) => {
         try {
+          // ⏳ wait for socket to be ready
+          await new Promise(r => setTimeout(r, 2000));
+
           const code = await sock.requestPairingCode(number.trim());
           console.log("\nPAIRING CODE:", code, "\n");
         } catch (err) {
-          console.error("Failed to get pairing code:", err);
+          console.error("Pairing failed:", err.message);
         }
         rl.close();
       }
     );
   }
-
-  sock.ev.on("creds.update", saveCreds);
 
   sock.ev.on("messages.upsert", async ({ messages }) => {
     const m = messages[0];
