@@ -1,6 +1,7 @@
 const { default: makeWASocket, useMultiFileAuthState } =
   require("@whiskeysockets/baileys");
 
+const qrcode = require("qrcode-terminal");
 const logic = require("./logic");
 const scheduler = require("./scheduler");
 
@@ -12,14 +13,19 @@ async function start() {
 
   const sock = makeWASocket({
     auth: state,
-    printQRInTerminal: true, // ✅ QR LOGIN (WORKING)
     browser: ["Ubuntu", "Chrome", "20.0.0"]
   });
 
   sock.ev.on("creds.update", saveCreds);
 
   sock.ev.on("connection.update", (update) => {
-    const { connection } = update;
+    const { connection, qr } = update;
+
+    // ✅ PRINT QR MANUALLY
+    if (qr) {
+      console.log("\n📱 Scan this QR code with WhatsApp:\n");
+      qrcode.generate(qr, { small: true });
+    }
 
     if (connection === "open" && !schedulerStarted) {
       schedulerStarted = true;
