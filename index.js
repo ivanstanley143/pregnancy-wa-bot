@@ -1,46 +1,70 @@
 const { default: makeWASocket, useMultiFileAuthState } =
   require("@whiskeysockets/baileys");
 
-const qrcode = require("qrcode-terminal");
+const readline = require("readline");
 const logic = require("./logic");
 const scheduler = require("./scheduler");
 
+let pairingRequested = false;
 let schedulerStarted = false;
 
 async function start() {
   const { state, saveCreds } =
-    await useMultiFileAuthState("/data/auth");
+    await useMultiFileAuthState("./baileys_auth_info");
 
   const sock = makeWASocket({
     auth: state,
-    browser: ["Ubuntu", "Chrome", "20.0.0"]
+
+    // ✅ VIDEO FIX: hardcoded WhatsApp Web version
+    version: [2, 3000, 1025190524],
+
+    // video usually keeps this enabled
+    printQRInTerminal: false
   });
 
   sock.ev.on("creds.update", saveCreds);
 
-  sock.ev.on("connection.update", (update) => {
-    const { connection, qr } = update;
+  sock.ev.on("connection.update", async (update) => {
+    const { connection } = update;
 
-    // ✅ PRINT QR MANUALLY
-    if (qr) {
-      console.log("\n📱 Scan this QR code with WhatsApp:\n");
-      qrcode.generate(qr, { small: true });
+    // 🔢 NUMBER PAIRING (VIDEO METHOD)
+    if (
+      connection === "open" &&
+      !state.creds.registered &&
+      !pairingRequested
+    ) {
+      pairingRequested = true;
+
+      const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+      });
+
+      rl.question(
+        "Enter WhatsApp number with country code (example: 91XXXXXXXXXX): ",
+        async (number) => {
+          try {
+            const code = await sock.requestPairingCode(number.trim());
+            console.log("\nPAIRING CODE:", code, "\n");
+          } catch (err) {
+            console.error("Pairing failed:", err);
+          }
+          rl.close();
+        }
+      );
     }
 
-    if (connection === "open" && !schedulerStarted) {
+    // ▶️ Start scheduler AFTER login
+    if (connection === "open" && sock.user?.id && !schedulerStarted) {
       schedulerStarted = true;
-      console.log("✅ WhatsApp connected. Starting scheduler...");
+      console.log("WhatsApp connected. Starting scheduler...");
       scheduler(sock);
-    }
-
-    if (connection === "close") {
-      console.log("⚠️ Connection closed. Reconnecting...");
     }
   });
 
   sock.ev.on("messages.upsert", async ({ messages }) => {
     const m = messages[0];
-    if (!m.message || m.key.fromMe) return;
+    if (!m?.message || m.key.fromMe) return;
 
     const text =
       m.message.conversation ||
