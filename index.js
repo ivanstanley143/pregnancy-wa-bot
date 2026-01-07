@@ -5,7 +5,7 @@ const logic = require("./logic");
 const scheduler = require("./scheduler");
 const readline = require("readline");
 
-let pairingRequested = false; // 🔒 IMPORTANT FLAG
+let pairingRequested = false;
 
 async function start() {
   const { state, saveCreds } =
@@ -13,12 +13,13 @@ async function start() {
 
   const sock = makeWASocket({
     auth: state,
-    printQRInTerminal: false
+    printQRInTerminal: false,
+    mobile: true, // ✅ REQUIRED FOR PAIRING CODE
+    browser: ["Chrome", "Android", "13"] // ✅ mobile identity
   });
 
   sock.ev.on("creds.update", saveCreds);
 
-  // ✅ SAFE pairing (ONLY ONCE)
   sock.ev.on("connection.update", async (update) => {
     const { connection } = update;
 
@@ -39,9 +40,9 @@ async function start() {
         async (number) => {
           try {
             const code = await sock.requestPairingCode(number.trim());
-            console.log("\nPAIRING CODE:", code, "\n");
+            console.log("\n✅ PAIRING CODE:", code, "\n");
           } catch (err) {
-            console.error("Pairing failed:", err.message);
+            console.error("❌ Pairing failed:", err.message);
           }
           rl.close();
         }
