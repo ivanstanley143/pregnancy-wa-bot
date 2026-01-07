@@ -5,6 +5,8 @@ const logic = require("./logic");
 const scheduler = require("./scheduler");
 const readline = require("readline");
 
+let pairingRequested = false; // 🔒 IMPORTANT FLAG
+
 async function start() {
   const { state, saveCreds } =
     await useMultiFileAuthState("/data/auth");
@@ -16,11 +18,17 @@ async function start() {
 
   sock.ev.on("creds.update", saveCreds);
 
-  // ✅ WAIT for connection open, then ask pairing
+  // ✅ SAFE pairing (ONLY ONCE)
   sock.ev.on("connection.update", async (update) => {
     const { connection } = update;
 
-    if (connection === "open" && !state.creds.registered) {
+    if (
+      connection === "open" &&
+      !state.creds.registered &&
+      !pairingRequested
+    ) {
+      pairingRequested = true;
+
       const rl = readline.createInterface({
         input: process.stdin,
         output: process.stdout
