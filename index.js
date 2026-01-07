@@ -6,6 +6,7 @@ const scheduler = require("./scheduler");
 const readline = require("readline");
 
 let pairingRequested = false;
+let schedulerStarted = false; // 🔒 prevent multiple starts
 
 async function start() {
   const { state, saveCreds } =
@@ -14,8 +15,8 @@ async function start() {
   const sock = makeWASocket({
     auth: state,
     printQRInTerminal: false,
-    mobile: true, // ✅ REQUIRED FOR PAIRING CODE
-    browser: ["Chrome", "Android", "13"] // ✅ mobile identity
+    mobile: true,
+    browser: ["Chrome", "Android", "13"]
   });
 
   sock.ev.on("creds.update", saveCreds);
@@ -23,6 +24,7 @@ async function start() {
   sock.ev.on("connection.update", async (update) => {
     const { connection } = update;
 
+    // 🔑 Pairing (only once)
     if (
       connection === "open" &&
       !state.creds.registered &&
@@ -48,6 +50,13 @@ async function start() {
         }
       );
     }
+
+    // ✅ START SCHEDULER ONLY AFTER LOGIN
+    if (connection === "open" && sock.user?.id && !schedulerStarted) {
+      schedulerStarted = true;
+      console.log("✅ WhatsApp connected. Starting scheduler...");
+      scheduler(sock);
+    }
   });
 
   sock.ev.on("messages.upsert", async ({ messages }) => {
@@ -64,8 +73,6 @@ async function start() {
       from: m.key.remoteJid
     });
   });
-
-  scheduler(sock);
 }
 
 start();
