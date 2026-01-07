@@ -24,7 +24,7 @@ async function start() {
     });
 
     rl.question(
-      "Enter WhatsApp number with country code (example: 91XXXXXXXXXX): ",
+      "Enter WhatsApp number with country code (example: 66XXXXXXXXX): ",
       async (number) => {
         try {
           // ⏳ wait for socket to be ready
