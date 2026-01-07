@@ -1,0 +1,12 @@
+{
+  "name": "pregnancy-wa-bot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@whiskeysockets/baileys": "^6.7.8",
+    "moment-timezone": "^0.5.45"
+  }
+}
