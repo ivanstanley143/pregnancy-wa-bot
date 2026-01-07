@@ -3,6 +3,7 @@ const { default: makeWASocket, useMultiFileAuthState } =
 
 const logic = require("./logic");
 const scheduler = require("./scheduler");
+const readline = require("readline");
 
 async function start() {
   const { state, saveCreds } =
@@ -10,8 +11,29 @@ async function start() {
 
   const sock = makeWASocket({
     auth: state,
-    printQRInTerminal: true
+    printQRInTerminal: false // ❌ QR disabled
   });
+
+  // ✅ Pairing code login (NEW METHOD)
+  if (!state.creds.registered) {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout
+    });
+
+    rl.question(
+      "Enter WhatsApp number with country code (example: 66XXXXXXXXXX): ",
+      async (number) => {
+        try {
+          const code = await sock.requestPairingCode(number.trim());
+          console.log("\nPAIRING CODE:", code, "\n");
+        } catch (err) {
+          console.error("Failed to get pairing code:", err);
+        }
+        rl.close();
+      }
+    );
+  }
 
   sock.ev.on("creds.update", saveCreds);
 
